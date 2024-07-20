@@ -35,29 +35,44 @@ logging:
 
 #management.endpoints.web.base-path=/
 management.endpoints.enabled-by-default: false
-management.endpoint.health:
- enabled: true
- show-details: always
+# management.endpoint.health:
+#  enabled: true
+#  show-details: always
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 resilience4j.circuitbreaker:
   instances:
     licenseService:
       registerHealthIndicator: true
-      ringBufferSizeInClosedState: 5
-      ringBufferSizeInHalfOpenState: 3
+      # ringBufferSizeInClosedState: 5
+      # ringBufferSizeInHalfOpenState: 3
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
       waitDurationInOpenState: 10s
-      failureRateThreshold: 50
+      failureRateThreshold: 20
       recordExceptions:
         - org.springframework.web.client.HttpServerErrorException
         - java.io.IOException
         - java.util.concurrent.TimeoutException
         - org.springframework.web.client.ResourceAccessException
     organizationService:
-      registerHealthIndicator: true
-      ringBufferSizeInClosedState: 6
-      ringBufferSizeInHalfOpenState: 4
+      registerHealthIndicator: false
+      # ringBufferSizeInClosedState: 6
+      # ringBufferSizeInHalfOpenState: 4
+      minimumNumberOfCalls: 6
+      permittedNumberOfCallsInHalfOpenState: 4
       waitDurationInOpenState: 20s
-      failureRateThreshold: 60
+      failureRateThreshold: 20
 
 resilience4j.ratelimiter:
   instances:
@@ -69,7 +84,7 @@ resilience4j.ratelimiter:
 resilience4j.retry:
   instances:
     retryLicenseService:
-      maxRetryAttempts: 5
+      # maxRetryAttempts: 5
       waitDuration: 10000
       retry-exceptions:
         - java.util.concurrent.TimeoutException

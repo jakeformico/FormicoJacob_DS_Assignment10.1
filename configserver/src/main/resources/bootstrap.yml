@@ -4,14 +4,16 @@ spring:
   profiles:
     active:
     - native
+    # - git
   cloud:
     config:
       server:
         native:
           search-locations: classpath:/config
-        #git:
-         #   uri: https://github.com/ihuaylupo/config.git
-         #   searchPaths: licensingservice
+        # git:
+        #    uri: https://github.com/jakeformico/config.git
+        #    searchPaths: config
+    
     
 server:
   port: 8071

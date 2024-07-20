@@ -16,49 +16,69 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import static org.springframework.security.config.Customizer.withDefaults;
+
+// @Configuration
+// @EnableWebSecurity
+// @ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
+// public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+
+// 	@Autowired
+// 	public KeycloakClientRequestFactory keycloakClientRequestFactory;
+
+// 	@Override
+// 	protected void configure(HttpSecurity http) throws Exception {
+// 		super.configure(http);
+// 		http.authorizeRequests()
+// 		.anyRequest().authenticated();
+// 		http.csrf().disable();
+// 	}
+
+// 	@Autowired
+// 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+// 		KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+// 		keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+// 		auth.authenticationProvider(keycloakAuthenticationProvider);
+// 	}
+
+// 	@Bean
+// 	@Override
+// 	protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+// 		return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+// 	}
+
+// 	@Bean
+// 	public KeycloakConfigResolver KeycloakConfigResolver() {
+// 		return new KeycloakSpringBootConfigResolver();
+// 	}
+
+// 	@Bean
+// 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+// 	public KeycloakRestTemplate keycloakRestTemplate() {
+// 		return new KeycloakRestTemplate(keycloakClientRequestFactory);
+// 	}
+// }
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackageClasses = KeycloakSecurityComponents.class)
-public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-
-	@Autowired
-	public KeycloakClientRequestFactory keycloakClientRequestFactory;
-
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		super.configure(http);
-		http.authorizeRequests()
-		.anyRequest().authenticated();
-		http.csrf().disable();
-	}
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
-		keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
-		auth.authenticationProvider(keycloakAuthenticationProvider);
-	}
+public class SecurityConfig {
 
 	@Bean
-	@Override
-	protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-		return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http
+				.authorizeHttpRequests((authorize) -> authorize
+						.anyRequest().hasRole("ADMIN")) // authenticated())
+				.csrf(AbstractHttpConfigurer::disable)
+				// .oauth2ResourceServer((resourceServer) -> resourceServer
+				// .opaqueToken(Customizer.withDefaults()));
+				.httpBasic(withDefaults());
+		return http.build();
 	}
 
-	@Bean
-	public KeycloakConfigResolver KeycloakConfigResolver() {
-		return new KeycloakSpringBootConfigResolver();
-	}
-
-	@Bean
-	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	public KeycloakRestTemplate keycloakRestTemplate() {
-		return new KeycloakRestTemplate(keycloakClientRequestFactory);
-	}
 }
-
