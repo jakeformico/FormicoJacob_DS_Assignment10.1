@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
@@ -19,18 +20,12 @@ import org.springframework.security.web.authentication.session.SessionAuthentica
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@EnableMethodSecurity(jsr250Enabled = true) //Enables @RoleAllowed
 public class SecurityConfig{
-// public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
-    // @Override
-    // protected void configure(HttpSecurity http) throws Exception {
-    //     super.configure(http);
-    //     http.authorizeRequests()
-    //         .anyRequest().authenticated();
-    //     http.csrf().disable();
-    // }
-     @Bean
+
+    //Registering the keycloak authentication provider
+    @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(requests -> requests
                 .anyRequest().authenticated());

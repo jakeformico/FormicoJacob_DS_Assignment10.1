@@ -80,6 +80,7 @@ services:
         condition: service_started
     ports:
       - "8180:8080"
+      # - "8180:8180"
     networks:
       - backend
   organizationservice:
