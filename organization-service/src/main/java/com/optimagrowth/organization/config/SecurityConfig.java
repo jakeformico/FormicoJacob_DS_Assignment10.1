@@ -4,6 +4,7 @@ import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
+// import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,3 +52,35 @@ public class SecurityConfig{
         return new KeycloakSpringBootConfigResolver();
     }
 }
+
+// @Configuration
+// @EnableWebSecurity
+// @EnableGlobalMethodSecurity(jsr250Enabled = true)
+// public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
+
+//     @Override
+//     protected void configure(HttpSecurity http) throws Exception {
+//         super.configure(http);
+//         http.authorizeRequests()
+//             .anyRequest().authenticated();
+//         http.csrf().disable();
+//     }
+
+//     @Autowired
+//     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+//         keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+//         auth.authenticationProvider(keycloakAuthenticationProvider);
+//     }
+
+//     @Bean
+//     @Override
+//     protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+//         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
+//     }
+
+//     @Bean
+//     public KeycloakConfigResolver KeycloakConfigResolver() {
+//         return new KeycloakSpringBootConfigResolver();
+//     }
+// }
